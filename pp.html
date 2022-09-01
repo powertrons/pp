@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+	<title>Ping-Pong</title>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<script>
+		window.addEventListener("load", () => {
+
+			const canvas = document.getElementById("canvas"),
+				touchpadOne = document.getElementById("touchpadOne"),
+				touchpadTwo = document.getElementById("touchpadTwo");
+
+			ctx = canvas.getContext("2d");
+			canvas.width = 300;
+			canvas.height = 300;
+
+			var playerOne = {},
+				playerTwo = {},
+				ball = {};
+
+			playerOne.width = 40;
+			playerOne.height = 10;
+			playerOne.x = (canvas.width / 2) - (playerOne.width / 2);
+			playerOne.y = (canvas.height * 0.9) - (playerOne.height / 2);
+
+			playerTwo.width = 40;
+			playerTwo.height = 10;
+			playerTwo.x = (canvas.width / 2) - (playerTwo.width / 2);
+			playerTwo.y = (canvas.height * 0.1) - (playerTwo.height / 2);
+
+			ball.width = 15;
+			ball.height = 15;
+			ball.x = (canvas.width / 2) - (ball.width / 2);
+			ball.y = (canvas.width / 2) - (ball.height / 2);
+			ball.vx = 2;
+			ball.vy = 2;
+
+			const run = () => {
+
+				if (ball.x <= 0 || ball.x >= canvas.width - ball.width) {
+					ball.vx = ball.vx * -1;
+				}
+				if (ball.y <= 0) {
+					ball.vy = ball.vy * -1;
+				}
+				if (ball.y >= canvas.width - ball.height) {
+					ball.vy = ball.vy * -1;
+				}
+
+				if (ball.x > playerOne.x - ball.width && ball.x <= playerOne.x + playerOne.width && ball.y + ball.height >= playerOne.y) {
+					ball.vy = -1;
+				}
+
+				if (ball.x > playerTwo.x - ball.width && ball.x <= playerTwo.x + playerTwo.width && ball.y <= playerTwo.y + playerTwo.height) {
+					ball.vy = 1;
+				}
+
+				if (ball.vx > 0 || ball.vx < 0 || ball.vy > 0 || ball.vy < 0) {
+					if (ball.x + ball.width + ball.vx <= canvas.width) {
+						ball.x = ball.x + ball.vx;
+					}
+					if (ball.y + ball.height + ball.vy <= canvas.height) {
+						ball.y = ball.y + ball.vy;
+					}
+					if (ball.x - ball.vx >= 0) {
+						ball.x = ball.x + ball.vx;
+					}
+					if (ball.y - ball.vy >= 0) {
+						ball.y = ball.y + ball.vy;
+					}
+				}
+
+				/*	if (ball.x >= 0 && ball.x <= canvas.width - playerTwo.width) {
+						playerTwo.x = (ball.x+(ball.width/2)) - (playerTwo.width/2);
+					}*/
+
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+				ctx.fillRect(playerOne.x, playerOne.y, playerOne.width, playerOne.height);
+
+				ctx.fillRect(playerTwo.x, playerTwo.y, playerTwo.width, playerTwo.height);
+
+				ctx.fillRect(ball.x, ball.y, ball.width, ball.height);
+
+				setTimeout(run, 1000 / 60);
+
+			};
+			run();
+
+			touchpadOne.addEventListener("touchstart", (event) => {
+				event.preventDefault();
+				if (event.changedTouches[event.changedTouches.length - 1].pageX - playerOne.width >= 0 && event.changedTouches[event.changedTouches.length - 1].pageX - playerOne.width <= canvas.width - playerOne.width) {
+					playerOne.x = event.changedTouches[event.changedTouches.length - 1].pageX - playerOne.width;
+				}
+				if (event.changedTouches[event.changedTouches.length - 1].pageX - playerOne.width < 0) {
+					playerOne.x = 0;
+				}
+				if (event.changedTouches[event.changedTouches.length - 1].pageX - playerOne.width < canvas.width) {
+					playerOne.x = canvas.width - playerOne.width;
+				}
+			});
+
+			touchpadOne.addEventListener("touchmove", (event) => {
+				event.preventDefault();
+				if (event.changedTouches[event.changedTouches.length - 1].pageX - playerOne.width >= 0 && event.changedTouches[event.changedTouches.length - 1].pageX - playerOne.width <= canvas.width - playerOne.width) {
+					playerOne.x = event.changedTouches[event.changedTouches.length - 1].pageX - playerOne.width;
+				}
+			});
+			touchpadTwo.addEventListener("touchstart", (event) => {
+				event.preventDefault();
+				if (event.changedTouches[event.changedTouches.length - 1].pageX - playerTwo.width >= 0 && event.changedTouches[event.changedTouches.length - 1].pageX - playerTwo.width <= canvas.width - playerTwo.width) {
+					playerTwo.x = event.changedTouches[event.changedTouches.length - 1].pageX - playerTwo.width;
+				}
+				if (event.changedTouches[event.changedTouches.length - 1].pageX - playerTwo.width < 0) {
+					playerTwo.x = 0;
+				}
+				if (event.changedTouches[event.changedTouches.length - 1].pageX - playerTwo.width < canvas.width) {
+					playerTwo.x = canvas.width - playerTwo.width;
+				}
+			});
+
+			touchpadTwo.addEventListener("touchmove", (event) => {
+				event.preventDefault();
+				if (event.changedTouches[event.changedTouches.length - 1].pageX - playerTwo.width >= 0 && event.changedTouches[event.changedTouches.length - 1].pageX - playerTwo.width <= canvas.width - playerTwo.width) {
+					playerTwo.x = event.changedTouches[event.changedTouches.length - 1].pageX - playerTwo.width;
+				}
+			});
+window.addEventListener("keydown", (e)=>{
+if(e.key=="ArrowLeft" && playerOne.x >= 0 + playerOne.width){
+playerOne.x -= 40;
+}else if(e.key=="ArrowRight" && playerOne.x < canvas.width - playerOne.width * 2){
+playerOne.x += 40;
+}else if(e.key=="a" && playerTwo.x >= 0 + playerTwo.width / 2){
+playerTwo.x -= 40;
+}else if(e.key=="d" && playerTwo.x <= canvas.width - playerTwo.width * 2){
+playerTwo.x += 40;
+}
+});
+		});
+	</script>
+	<style>
+		* {
+			margin: 0 auto;
+			box-sizing: border-box;
+		}
+
+		html {
+			width: 100%;
+			height: 100%;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			text-align: center;
+		}
+
+		canvas {
+			display: block;
+			width: 300px;
+			height: 300px;
+			border: 1px solid black;
+		}
+
+		#touchpadOne,
+		#touchpadTwo {
+			width: 300px;
+			height: 150px;
+			border: 1px solid black;
+		}
+	</style>
+</head>
+
+<body>
+	<canvas id="touchpadTwo" hidden></canvas>
+	<canvas id="canvas"></canvas>
+	<canvas id="touchpadOne"></canvas>
+</body>
+
+</html>
